@@ -3,25 +3,33 @@
 ## Table of Content
 - [Purpose](#purpose)
 - [Usage](#usage)
-- [Add New Website](#add-new-website)
 
 ## Purpose
 
-Easily add new websites with automatic SSL support by simply updating the list of domains inside `.env` file. No need to setup nginx, proxies, or mess with docker-compose.yml file or configuring new containers.
+Provide two ways to add new websites/APIs with automatic SSL support and renewal:
 
-Each website's `index.html` file is expected at this dynamic location `<WEBSITES_PATH>/<domain>.<tld>/dist/index.html`.
-The `/dist` part can be changed inside `websites/conf.d/default.conf` by updating `root` path.
+1. Simply update the list of domains inside `.env` file. No need to setup nginx, proxies, mess with docker-compose.yml file, or configuring new containers (see [Add New Website](#add-new-website)).
+
+2. Spin up new docker-compose.yml instance (see [WordPress example](https://github.com/evertramos/wordpress-docker-letsencrypt)).
+
 ## Usage
 
-In order to use, you must follow these steps:
+### A. Usage Out of The Box
 
-1. Clone this repository:
-
+Simply clone this repo, create and update `.env` file and run docker-compose (docker must be installed first):
 ```bash
-git clone https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion.git
+git clone https://github.com/ecoinomist/docker-letsencrypt-nginx-proxy.git webproxy
+cd webproxy
+cp .env.sample .env # then update WEBSITES_DOMAINS list
+docker network create webproxy
+docker-compose up -d
 ```
 
-Or just copy the content of `docker-compose.yml`, as of below:
+### B. Usage with Custom Configurations
+
+Follow these steps:
+
+1. Copy the content of `docker-compose.yml`, as of below:
 
 ```bash
 version: '3'
@@ -31,7 +39,7 @@ services:
     labels:
         com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     container_name: nginx
-    restart: unless-stopped
+    restart: always
     ports:
       - "80:80"
       - "443:443"
@@ -45,7 +53,7 @@ services:
     image: jwilder/docker-gen
     command: -notify-sighup nginx -watch -wait 5s:30s /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
     container_name: nginx-gen
-    restart: unless-stopped
+    restart: always
     volumes:
       - ${NGINX_FILES_PATH}/conf.d:/etc/nginx/conf.d
       - ${NGINX_FILES_PATH}/vhost.d:/etc/nginx/vhost.d
@@ -57,7 +65,7 @@ services:
   nginx-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: nginx-letsencrypt
-    restart: unless-stopped
+    restart: always
     volumes:
       - ${NGINX_FILES_PATH}/conf.d:/etc/nginx/conf.d
       - ${NGINX_FILES_PATH}/vhost.d:/etc/nginx/vhost.d
@@ -72,14 +80,14 @@ services:
 2. Create an `.env` file and say where you will locate the nginx files:
 
 ```
-NGINX_FILES_PATH=/path/to/your/nginx/data
+NGINX_FILES_PATH=./nginx
 ```
 
-3. Change the file `docker-compose.yml` with you own settings:
+3. Change the file `docker-compose.yml` with your own settings:
 
 3.1. Set your PROXY Network
 
-Your wordpress container must be in the same network of your nginx proxy.
+Your website/API container must be in the same network of your nginx proxy.
 ```bash
 networks:
   default:
@@ -114,6 +122,15 @@ docker-compose up -d
 
 Your proxy is ready to go!
 
+## Next Step
+
+### If you want to test how it works please check this working sample (docker-compose.yml)
+
+[wordpress-docker-letsencrypt](https://github.com/evertramos/wordpress-docker-letsencrypt)
+
+Or you can run your own containers with the option `-e VIRTUAL_HOST=foo.bar.com` alongside with `LETSENCRYPT_HOST=foo.bar.com`, exposing port 80 and 443, and your certificate will be generated and always valid.
+
+
 ## Add New Website
 
 This is a simple way to add new websites, especially static sites:
@@ -127,14 +144,8 @@ This is a simple way to add new websites, especially static sites:
 docker-compose up -d
 ```
 
-## Next Step
-
-
-### If you want to test how it works please check this working sample (docker-compose.yml)
-
-[wordpress-docker-letsencrypt](https://github.com/evertramos/wordpress-docker-letsencrypt)
-
-Or you can run your own containers with the option `-e VIRTUAL_HOST=foo.bar.com` alongside with `LETSENCRYPT_HOST=foo.bar.com`, exposing port 80 and 443, and your certificate will be generated and always valid.
+Each website's `index.html` file is expected at this dynamic location `<WEBSITES_PATH>/<domain>.<tld>/dist/index.html`.
+The `/dist` part can be changed inside `websites/conf.d/default.conf` by updating `root` path.
 
 
 ## Credits
