@@ -1,6 +1,4 @@
-# Usage of Docker Compose (docker-compose) with NGINX proxy and Letsencrypt
-
-Docker Compose (docker-compose) for [docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion)
+# Docker Compose with NGINX proxy and Letsencrypt automatic SSL
 
 ## Table of Content
 - [Purpose](#purpose)
@@ -9,9 +7,10 @@ Docker Compose (docker-compose) for [docker-letsencrypt-nginx-proxy-companion](h
 
 ## Purpose
 
-This docker-compose file, version '3', was built to help using NGINX as web proxy to your containers, integrated with LetsEncrypt certification, using the great work of [@jwilder](https://github.com/jwilder) with [docker-gen](https://github.com/jwilder/docker-gen) and [nginx-proxy](https://github.com/jwilder/nginx-proxy) along with the ultimate tool [docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) designed by [JrCs](https://github.com/JrCs) to integrate the great SSL Certificates from the best [LetsEncrypt](https://letsencrypt.org/).
+Easily add new websites with automatic SSL support by simply updating the list of domains inside `.env` file. No need to setup nginx, proxies, or mess with docker-compose.yml file or configuring new containers.
 
-
+Each website's `index.html` file is expected at this dynamic location `<WEBSITES_PATH>/<domain>.<tld>/dist/index.html`.
+The `/dist` part can be changed inside `websites/conf.d/default.conf` by updating `root` path.
 ## Usage
 
 In order to use, you must follow these steps:
