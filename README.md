@@ -2,6 +2,10 @@
 
 Docker Compose (docker-compose) for [docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion)
 
+## Table of Content
+- [Purpose](#purpose)
+- [Usage](#usage)
+- [Add New Website](#add-new-website)
 
 ## Purpose
 
@@ -111,6 +115,18 @@ docker-compose up -d
 
 Your proxy is ready to go!
 
+## Add New Website
+
+This is a simple way to add new websites, especially static sites:
+
+1. Update `WEBSITES_DOMAINS` in `.env` file
+
+2. Clone the website repo to `WEBSITES_PATH`
+
+3. Run:
+```bash
+docker-compose up -d
+```
 
 ## Next Step
 
