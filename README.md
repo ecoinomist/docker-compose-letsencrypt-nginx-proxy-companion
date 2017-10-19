@@ -1,6 +1,5 @@
 # Docker Compose with NGINX proxy and Letsencrypt automatic SSL
 
-## Table of Content
 - [Purpose](#purpose)
 - [Usage](#usage)
 
@@ -8,7 +7,7 @@
 
 Provide two ways to add new websites/APIs with automatic SSL support and renewal:
 
-1. Simply update the list of domains inside `.env` file. No need to setup nginx, proxies, mess with docker-compose.yml file, or configuring new containers (see [Add New Website](#add-new-website)).
+1. Simply update the list of domains inside `.env` file. No need to setup nginx, proxies, mess with docker-compose.yml file, or configuring new containers (see [Usage Out of The Box](#a-usage-out-of-the-box)).
 
 2. Spin up new docker-compose.yml instance (see [WordPress example](https://github.com/evertramos/wordpress-docker-letsencrypt)).
 
@@ -24,6 +23,9 @@ cp .env.sample .env # then update WEBSITES_DOMAINS list
 docker network create webproxy
 docker-compose up -d
 ```
+
+Each website listed at `WEBSITES_DOMAINS` is expected to have `index.html` file at this dynamic location `<WEBSITES_PATH>/<domain>.<tld>/dist/index.html`.
+The `/dist` part can be changed inside `websites/conf.d/default.conf` by updating `root` path.
 
 ### B. Usage with Custom Configurations
 
@@ -122,30 +124,11 @@ docker-compose up -d
 
 Your proxy is ready to go!
 
-## Next Step
-
 ### If you want to test how it works please check this working sample (docker-compose.yml)
 
 [wordpress-docker-letsencrypt](https://github.com/evertramos/wordpress-docker-letsencrypt)
 
 Or you can run your own containers with the option `-e VIRTUAL_HOST=foo.bar.com` alongside with `LETSENCRYPT_HOST=foo.bar.com`, exposing port 80 and 443, and your certificate will be generated and always valid.
-
-
-## Add New Website
-
-This is a simple way to add new websites, especially static sites:
-
-1. Update `WEBSITES_DOMAINS` in `.env` file
-
-2. Clone the website repo to `WEBSITES_PATH`
-
-3. Run:
-```bash
-docker-compose up -d
-```
-
-Each website's `index.html` file is expected at this dynamic location `<WEBSITES_PATH>/<domain>.<tld>/dist/index.html`.
-The `/dist` part can be changed inside `websites/conf.d/default.conf` by updating `root` path.
 
 
 ## Credits
