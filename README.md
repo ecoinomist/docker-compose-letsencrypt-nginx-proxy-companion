@@ -24,8 +24,8 @@ docker network create webproxy
 docker-compose up -d
 ```
 
-Each website listed at `WEBSITES_DOMAINS` is expected to have `index.html` file at this dynamic location `<WEBSITES_PATH>/<domain>.<tld>/dist/index.html`.
-The `/dist` part can be changed inside `websites/conf.d/default.conf` by updating `root` path.
+Each website listed at `WEBSITES_DOMAINS` is expected to have `index.html` file at this dynamic location `<WEBSITES_PATH>/<domain>.<tld>/build/index.html`.
+The `/build` part can be changed inside `websites/conf.d/default.conf` by updating `root` path.
 
 ### B. Usage with Custom Configurations
 
