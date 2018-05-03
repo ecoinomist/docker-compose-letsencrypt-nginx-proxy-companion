@@ -6,7 +6,7 @@ services:
         com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     container_name: nginx
     # Note: `unless-stopped` option doesn't restart consistently on boot
-    restart: always
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -20,7 +20,7 @@ services:
     image: jwilder/docker-gen
     command: -notify-sighup nginx -watch -wait 5s:30s /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
     container_name: nginx-gen
-    restart: always
+    restart: unless-stopped
     volumes:
       - ${NGINX_FILES_PATH}/conf.d:/etc/nginx/conf.d
       - ${NGINX_FILES_PATH}/vhost.d:/etc/nginx/vhost.d
@@ -32,7 +32,7 @@ services:
   nginx-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: nginx-letsencrypt
-    restart: always
+    restart: unless-stopped
     volumes:
       - ${NGINX_FILES_PATH}/conf.d:/etc/nginx/conf.d
       - ${NGINX_FILES_PATH}/vhost.d:/etc/nginx/vhost.d
@@ -52,7 +52,7 @@ services:
   websites:
     image: nginx
     container_name: websites
-    restart: always
+    restart: unless-stopped
     expose:
       - "80"
       - "443"
