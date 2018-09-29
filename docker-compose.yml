@@ -1,7 +1,7 @@
 version: '3'
 services:
   nginx:
-    image: nginx
+    image: nginx:1.13.12
     labels:
         com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     container_name: nginx
@@ -17,7 +17,7 @@ services:
       - ${NGINX_FILES_PATH}/certs:/etc/nginx/certs:ro
 
   nginx-gen:
-    image: jwilder/docker-gen
+    image: jwilder/docker-gen:0.7.3
     command: -notify-sighup nginx -watch -wait 5s:30s /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
     container_name: nginx-gen
     restart: unless-stopped
@@ -30,7 +30,8 @@ services:
       - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
 
   nginx-letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
+    # stable version is between v1.8.1 and v1.9, created 2018-04-25T13:59:13.505051021Z, to avoid BIO_new_file error
+    image: jrcs/letsencrypt-nginx-proxy-companion:stable
     container_name: nginx-letsencrypt
     restart: unless-stopped
     volumes:
@@ -50,7 +51,7 @@ services:
   #   2. Clone website repo to `WEBSITES_PATH`
   #   3. $ docker-compose up -d
   websites:
-    image: nginx
+    image: nginx:1.13.12
     container_name: websites
     restart: unless-stopped
     expose:
