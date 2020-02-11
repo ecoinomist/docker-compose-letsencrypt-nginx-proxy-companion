@@ -33,7 +33,8 @@ services:
     # stable version is between v1.8.1 and v1.9, created 2018-04-25T13:59:13.505051021Z, to avoid BIO_new_file error
     image: jrcs/letsencrypt-nginx-proxy-companion:stable
     container_name: nginx-letsencrypt
-    restart: unless-stopped
+    # Enable auto-restart once all is working
+    #restart: unless-stopped
     volumes:
       - ${NGINX_FILES_PATH}/conf.d:/etc/nginx/conf.d
       - ${NGINX_FILES_PATH}/vhost.d:/etc/nginx/vhost.d
