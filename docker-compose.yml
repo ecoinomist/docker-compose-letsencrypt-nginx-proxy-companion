@@ -1,9 +1,10 @@
 version: '3'
+# Last tested 14.02.2020 - working with nginx:1.17.8, Docker version 19.03.5, docker-compose version 1.20.1
 services:
   nginx:
     image: nginx
     labels:
-        com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     container_name: nginx
     # Note: `unless-stopped` option doesn't restart consistently on boot
     # Enable auto-restart once all is working
@@ -32,7 +33,6 @@ services:
       - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
 
   nginx-letsencrypt:
-    # stable version is between v1.8.1 and v1.9, created 2018-04-25T13:59:13.505051021Z, to avoid BIO_new_file error
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: nginx-letsencrypt
     # Enable auto-restart once all is working
@@ -46,8 +46,8 @@ services:
     environment:
       NGINX_DOCKER_GEN_CONTAINER: "nginx-gen"
       NGINX_PROXY_CONTAINER: "nginx"
-#      ACME_CA_URI: "https://acme-staging.api.letsencrypt.org/directory"
-#      DEBUG: "true"
+      #ACME_CA_URI: "https://acme-staging.api.letsencrypt.org/directory"
+      #DEBUG: "true"
 
   # Add new websites steps:
   #   1. Update `WEBSITES_DOMAINS` in `.env` file
@@ -64,6 +64,7 @@ services:
     volumes:
       - ./websites/conf.d:/etc/nginx/conf.d
       - ${WEBSITES_PATH}:/var/www:ro
+      - ${SERVERS_PATH}:/var/server:ro
     environment:
       VIRTUAL_HOST: ${WEBSITES_DOMAINS}
       LETSENCRYPT_HOST: ${WEBSITES_DOMAINS}
